@@ -1,8 +1,8 @@
 const boardDisplay = document.querySelector(".gameboard");
 
 const Gameboard = (function () {
-    const _board = [null, null, null, null, null, null, null, null, null];
-    // const _board = ["X", "O", "X", "O", "X", "O", "X", "O", "X"];
+    // const _board = [null, null, null, null, null, null, null, null, null];
+    const _board = ["X", "O", null, null, "O", null, "X", "O", "X"];
 
     const setCell = (playerSymbol, index) => {
         if (index > _board.length) return;
@@ -34,24 +34,45 @@ const Player = function (symbol) {
     return { getSymbol };
 };
 
-const displayController = (() => {
+const DisplayGameController = (() => {
     const gameCells = [...document.querySelectorAll(".cell")];
 
-    const initiateBoard = () => {
+    const updateBoardDisplay = () => {
         return gameCells.map((cell) => {
             cell.textContent = Gameboard.getCell(cell.dataset.cell);
             return cell.textContent;
         });
     };
 
-    return { initiateBoard };
+    return { updateBoardDisplay };
 })();
 
-const Game = (() => {
+const GameController = (() => {
     const player1 = Player("X");
     const player2 = Player("O");
 
-    displayController.initiateBoard();
+    // Decide which player's turn it is
+    const player = () => {
+        let counter = 0;
+        for (let i = 0; i < 9; i++) {
+            console.log(Gameboard.getCell[i]);
+            if (Gameboard.getCell(i) !== null) {
+                counter++;
+            }
+        }
+        return counter % 2 === 0 ? player1 : player2;
+    };
+
+    // return every avaiable cell
+    const actions = () => {
+        let availableCells = [];
+        for (let i = 0; i < 9; i++) {
+            if (Gameboard.getCell(i) === null) {
+                availableCells.push(i);
+            }
+        }
+        return availableCells;
+    };
 
     const playRound = (player) => {};
 
@@ -72,3 +93,5 @@ const Game = (() => {
         ];
     };
 })();
+
+console.log(Gameboard.getBoard());
