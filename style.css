@@ -6,17 +6,29 @@
 
 body {
     height: 100vh;
+    text-align: center;
 }
 
 main {
     display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
+    grid-template-columns: repeat(3, auto);
     margin: 25px auto;
     gap: 3px;
     justify-content: center;    
 }
 
+.hide {
+    display: none;
+}
+
 .cell {
+    --size: 100px;
     background-color: #D9D9D9;
+    width: var(--size);
+    height: var(--size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    cursor: pointer;
 }

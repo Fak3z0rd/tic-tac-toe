@@ -1,22 +1,74 @@
 const boardDisplay = document.querySelector(".gameboard");
-const Gameboard = (() => {
-    let board = [null, null, null, null, null, null, null, null, null];
 
-    const createBoard = () => {
-        board.forEach((cell) => {
-            let div = document.createElement("div");
-            div.className = "cell"
-            boardDisplay.append(div)
+const Gameboard = (function () {
+    const _board = [null, null, null, null, null, null, null, null, null];
+    // const _board = ["X", "O", "X", "O", "X", "O", "X", "O", "X"];
+
+    const setCell = (playerSymbol, index) => {
+        if (index > _board.length) return;
+        _board[index] = playerSymbol;
+    };
+
+    const getCell = (index) => {
+        if (index > _board.length) return;
+        return _board[index];
+    };
+
+    const reset = () => {
+        for (let cell = 0; cell < _board.length; cell++) {
+            _board[cell] = null;
+        }
+        return _board;
+    };
+
+    return { setCell, getCell, reset };
+})();
+
+const Player = function (symbol) {
+    const _symbol = symbol;
+
+    const getSymbol = () => {
+        return _symbol;
+    };
+
+    return { getSymbol };
+};
+
+const displayController = (() => {
+    const gameCells = [...document.querySelectorAll(".cell")];
+
+    const initiateBoard = () => {
+        return gameCells.map((cell) => {
+            cell.textContent = Gameboard.getCell(cell.dataset.cell);
+            return cell.textContent;
         });
     };
 
-    return { createBoard };
+    return { initiateBoard };
 })();
 
-const Player = (sign) => {
-    this.sign = sign;
+const Game = (() => {
+    const player1 = Player("X");
+    const player2 = Player("O");
 
-    return { sign };
-};
+    displayController.initiateBoard();
 
-let gameboard = Gameboard.createBoard();
+    const playRound = (player) => {};
+
+    const terminal = () => {};
+
+    const utility = () => {};
+
+    const winner = () => {
+        winningRules = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+        ];
+    };
+})();
