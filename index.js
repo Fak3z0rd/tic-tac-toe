@@ -59,9 +59,7 @@ const GameController = (() => {
         if (GameController.winner(player)) {
             _gameOver = true;
             return;
-        }
-        console.log(actions().length === 0);
-        if (actions().length === 0) {
+        } else if (actions().length === 0) {
             _gameOver = true;
             _tie = true;
             return;
