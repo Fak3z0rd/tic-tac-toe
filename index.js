@@ -1,8 +1,7 @@
 const boardDisplay = document.querySelector(".gameboard");
 
-const Gameboard = (function () {
-    // const _board = [null, null, null, null, null, null, null, null, null];
-    const _board = ["X", "O", null, null, "O", null, "X", "O", "X"];
+const GameBoard = (function () {
+    const _board = [null, null, null, null, null, null, null, null, null];
 
     const setCell = (playerSymbol, index) => {
         if (index > _board.length) return;
@@ -21,7 +20,11 @@ const Gameboard = (function () {
         return _board;
     };
 
-    return { setCell, getCell, reset };
+    const getBoard = () => {
+        return _board;
+    };
+
+    return { setCell, getCell, reset, getBoard };
 })();
 
 const Player = function (symbol) {
@@ -34,54 +37,42 @@ const Player = function (symbol) {
     return { getSymbol };
 };
 
-const DisplayGameController = (() => {
-    const gameCells = [...document.querySelectorAll(".cell")];
-
-    const updateBoardDisplay = () => {
-        return gameCells.map((cell) => {
-            cell.textContent = Gameboard.getCell(cell.dataset.cell);
-            return cell.textContent;
-        });
-    };
-
-    return { updateBoardDisplay };
-})();
-
 const GameController = (() => {
     const player1 = Player("X");
     const player2 = Player("O");
+    let _gameOver = false;
 
     // Decide which player's turn it is
     const player = () => {
-        let counter = 0;
-        for (let i = 0; i < 9; i++) {
-            console.log(Gameboard.getCell[i]);
-            if (Gameboard.getCell(i) !== null) {
-                counter++;
-            }
-        }
-        return counter % 2 === 0 ? player1 : player2;
+        return actions().length % 2 !== 0 ? player1.getSymbol() : player2.getSymbol();
     };
 
-    // return every avaiable cell
+    // return every available cell
     const actions = () => {
-        let availableCells = [];
-        for (let i = 0; i < 9; i++) {
-            if (Gameboard.getCell(i) === null) {
-                availableCells.push(i);
-            }
-        }
-        return availableCells;
+        return GameBoard.getBoard().filter((cell) => cell === null);
     };
 
-    const playRound = (player) => {};
+    const playRound = (player, index) => {
+        GameBoard.setCell(player, index);
 
-    const terminal = () => {};
+        if (GameController.winner(player)) {
+            _gameOver = true;
+            return;
+        }
+        if (actions().length === 0) {
+            _gameOver = true;
+            return;
+        }
+    };
+
+    const terminal = () => {
+        return _gameOver;
+    };
 
     const utility = () => {};
 
-    const winner = () => {
-        winningRules = [
+    const winner = (playerSymbol) => {
+        let winningRules = [
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],
@@ -91,7 +82,60 @@ const GameController = (() => {
             [0, 4, 8],
             [2, 4, 6],
         ];
+
+        return winningRules.some((combination) => {
+            return combination.every((cell) => {
+                return GameBoard.getCell(cell) === playerSymbol;
+            });
+        });
     };
+
+    const reset = () => {
+        _gameOver = false;
+    };
+
+    return { player, actions, winner, playRound, terminal, reset };
 })();
 
-console.log(Gameboard.getBoard());
+const DisplayGameController = (() => {
+    const gameCells = [...document.querySelectorAll(".cell")];
+    const playerTurn = document.querySelector("[data-player]");
+    const reset = document.querySelector("[data-reset]");
+    const gameOverMessage = document.querySelector("[data-game-over]");
+
+    const updateBoardDisplay = () => {
+        playerTurn.textContent = GameController.player();
+
+        return gameCells.map((cell) => {
+            cell.textContent = GameBoard.getCell(cell.dataset.cell);
+            return cell.textContent;
+        });
+    };
+
+    const gameOverDisplay = () => {
+        gameOverMessage.textContent = "Game Over!";
+        gameOverMessage.classList.remove("hide");
+    };
+
+    gameCells.forEach((cell) => {
+        cell.addEventListener("click", (e) => {
+            let gameOver = GameController.terminal();
+            if (GameBoard.getCell(e.target.dataset.cell) !== null || gameOver === true) return;
+            let player = GameController.player();
+            GameController.playRound(player, e.target.dataset.cell);
+            updateBoardDisplay();
+            gameOver = GameController.terminal();
+            if (gameOver) {
+                gameOverDisplay();
+                return;
+            }
+        });
+    });
+
+    reset.addEventListener("click", () => {
+        GameBoard.reset();
+        GameController.reset();
+        updateBoardDisplay();
+        gameOverMessage.classList.add("hide");
+    });
+})();

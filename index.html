@@ -13,7 +13,7 @@
         <h1>Tic-Tac-Toe</h1>
     </header>
     <section class="display">
-        Player <span class="display-player playerX">X</span> turn!
+        Player <span class="display-player playerX" data-player></span> turn!
     </section>
     <main class="gameboard">
         
@@ -27,9 +27,9 @@
         <div class="cell" data-cell="7"></div>
         <div class="cell" data-cell="8"></div>
     </main>
-    <section class="display announcer hide">Teste</section>
+    <section class="display announcer hide" data-game-over>Teste</section>
     <section class="controls">
-        <button id="reset">Reset</button>
+        <button id="reset" data-reset>Reset</button>
     </section>
 </body>
 </html>
