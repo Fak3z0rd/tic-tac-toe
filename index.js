@@ -103,9 +103,10 @@ const DisplayGameController = (() => {
     const playerTurn = document.querySelector("[data-player]");
     const reset = document.querySelector("[data-reset]");
     const gameOverMessage = document.querySelector("[data-game-over]");
+    const modal = document.querySelector("dialog");
 
     const updateBoardDisplay = () => {
-        playerTurn.textContent = GameController.player();
+        playerTurn.textContent = `Player ${GameController.player()} turn!`;
 
         return gameCells.map((cell) => {
             cell.textContent = GameBoard.getCell(cell.dataset.cell);
@@ -113,13 +114,16 @@ const DisplayGameController = (() => {
         });
     };
 
+    updateBoardDisplay();
+
     const gameOverDisplay = (player, tie) => {
         if (tie) {
             gameOverMessage.textContent = "Game Over! It's a Tie!";
         } else {
             gameOverMessage.textContent = `Game Over! Player ${player} Win!`;
         }
-        gameOverMessage.classList.remove("hide");
+        playerTurn.textContent = "";
+        modal.showModal();
     };
 
     const handleClick = (e) => {
@@ -147,5 +151,6 @@ const DisplayGameController = (() => {
         GameController.reset();
         updateBoardDisplay();
         gameOverMessage.classList.add("hide");
+        modal.close();
     });
 })();

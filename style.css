@@ -7,6 +7,9 @@
 body {
     height: 100vh;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 main {
@@ -17,9 +20,6 @@ main {
     justify-content: center;    
 }
 
-.hide {
-    display: none;
-}
 
 .cell {
     --size: 100px;
@@ -31,4 +31,39 @@ main {
     align-items: center;
     font-size: 50px;
     cursor: pointer;
+}
+
+header, footer {
+    background-color: black;
+    color: white;
+    padding: 1rem;
+}
+
+
+a {
+    text-decoration: none;
+    color: gray;
+}
+
+dialog {
+    margin: auto auto;
+    padding: 20px;
+}
+
+dialog .controls {
+    margin-top: 20px;
+}
+
+#reset {
+    padding: 7px;
+    border-radius: 5px;
+    width: 100px;
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#reset:hover {
+    background-color: rgba(0,0,0,.65);
 }
