@@ -41,6 +41,7 @@ const GameController = (() => {
     const player1 = Player("X");
     const player2 = Player("O");
     let _gameOver = false;
+    let _tie = false;
 
     // Decide which player's turn it is
     const player = () => {
@@ -59,14 +60,16 @@ const GameController = (() => {
             _gameOver = true;
             return;
         }
+        console.log(actions().length === 0);
         if (actions().length === 0) {
             _gameOver = true;
+            _tie = true;
             return;
         }
     };
 
     const terminal = () => {
-        return _gameOver;
+        return { gameover: _gameOver, tie: _tie };
     };
 
     const utility = () => {};
@@ -112,23 +115,32 @@ const DisplayGameController = (() => {
         });
     };
 
-    const gameOverDisplay = () => {
-        gameOverMessage.textContent = "Game Over!";
+    const gameOverDisplay = (player, tie) => {
+        if (tie) {
+            gameOverMessage.textContent = "Game Over! It's a Tie!";
+        } else {
+            gameOverMessage.textContent = `Game Over! Player ${player} Win!`;
+        }
         gameOverMessage.classList.remove("hide");
+    };
+
+    const handleClick = (e) => {
+        let result = GameController.terminal();
+
+        if (GameBoard.getCell(e.target.dataset.cell) !== null || result.gameover === true) return;
+        let player = GameController.player();
+        GameController.playRound(player, e.target.dataset.cell);
+        updateBoardDisplay();
+        result = GameController.terminal();
+        if (result.gameover) {
+            gameOverDisplay(player, result.tie);
+            return;
+        }
     };
 
     gameCells.forEach((cell) => {
         cell.addEventListener("click", (e) => {
-            let gameOver = GameController.terminal();
-            if (GameBoard.getCell(e.target.dataset.cell) !== null || gameOver === true) return;
-            let player = GameController.player();
-            GameController.playRound(player, e.target.dataset.cell);
-            updateBoardDisplay();
-            gameOver = GameController.terminal();
-            if (gameOver) {
-                gameOverDisplay();
-                return;
-            }
+            handleClick(e);
         });
     });
 
