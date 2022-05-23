@@ -56,7 +56,7 @@ const GameController = (() => {
     const playRound = (player, index) => {
         GameBoard.setCell(player, index);
 
-        if (GameController.winner(player)) {
+        if (GameController.winner(player) !== null) {
             _gameOver = true;
             return;
         } else if (actions().length === 0) {
@@ -69,8 +69,6 @@ const GameController = (() => {
     const terminal = () => {
         return { gameover: _gameOver, tie: _tie };
     };
-
-    const utility = () => {};
 
     const winner = (playerSymbol) => {
         let winningRules = [
@@ -88,14 +86,17 @@ const GameController = (() => {
             return combination.every((cell) => {
                 return GameBoard.getCell(cell) === playerSymbol;
             });
-        });
+        }) === true
+            ? playerSymbol
+            : null;
     };
 
     const reset = () => {
         _gameOver = false;
+        _tie = false;
     };
 
-    return { player, actions, winner, playRound, terminal, reset };
+    return { player, actions, winner, playRound, terminal, reset, utility };
 })();
 
 const DisplayGameController = (() => {
@@ -150,7 +151,6 @@ const DisplayGameController = (() => {
         GameBoard.reset();
         GameController.reset();
         updateBoardDisplay();
-        gameOverMessage.classList.add("hide");
         modal.close();
     });
 })();
